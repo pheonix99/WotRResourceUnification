@@ -1,0 +1,20 @@
+﻿{
+  "ResourceEntries": [
+    {
+      "Key": "Ki",
+      "BaseResourceFeatureGuid": "e9590244effb4be4f830b1e3fffced13",
+      "AltResourceFeatureGuids": [
+        "ae98ab7bda409ef4bb39149a212d6732",
+        "5661f68399d77ba48bee60df871d7728"
+      ]
+    },
+    {
+      "Key": "ArcanePool",
+      "BaseResourceFeatureGuid": "3ce9bb90749c21249adc639031d5eed1",
+      "AltResourceFeatureGuids": [
+        "95e04a9e86aa9e64dad7122625b79c62"
+      ]
+
+    }
+  ]
+}
