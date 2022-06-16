@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TabletopTweaks.Core.Config;
 
-namespace WotRResourceUnification.Config
+namespace ResourceUnification.Config
 {
     class ResourceDefines : IUpdatableSettings 
     {
         
-        public List<CombinedResourceEntry> ResourceEntries = new();
+        public List<CombinedScalingResourceEntry> ClassScalingResourceEntries = new();
 
         public void Init()
         {
@@ -24,11 +24,12 @@ namespace WotRResourceUnification.Config
             if (loadedSettings == null) { return; }
         }
     }
-    public class CombinedResourceEntry
+    public class CombinedScalingResourceEntry
     {
         public string Key;
-        public string BaseResourceFeatureGuid;
-        public List<string> AltResourceFeatureGuids;
+        
+        public List<string> ClassResourceFeatureGuids;
+        public List<string> NonClassResourceFeatureGuids;
     }
     public class GameResourceEntry
     {

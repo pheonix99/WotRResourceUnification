@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WotRResourceUnification.NewComponents;
+using ResourceUnification.NewComponents;
 
-namespace WotRResourceUnification.ModifiedComponents
+namespace ResourceUnification.ModifiedComponents
 {
 	
     class PatchAbilityResourceLogic
@@ -31,7 +31,7 @@ namespace WotRResourceUnification.ModifiedComponents
 				try
 				{
 					
-					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceUnificationRedirectComponent>().FirstOrDefault();
+					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 						//Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}");
@@ -58,7 +58,7 @@ namespace WotRResourceUnification.ModifiedComponents
 				try
 				{
 					
-					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceUnificationRedirectComponent>().FirstOrDefault();
+					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 						//Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}");

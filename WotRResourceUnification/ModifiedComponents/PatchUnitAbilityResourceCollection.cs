@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WotRResourceUnification.NewComponents;
+using ResourceUnification.NewComponents;
 
-namespace WotRResourceUnification.ModifiedComponents
+namespace ResourceUnification.ModifiedComponents
 {
     public class PatchUnitAbilityResourceCollection
     {
@@ -25,7 +25,7 @@ namespace WotRResourceUnification.ModifiedComponents
             {
                 try
                 {
-                    var redirect = blueprint.Components.OfType<ResourceUnificationRedirectComponent>().FirstOrDefault();
+                    var redirect = blueprint.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
                     if (redirect != null)
                     {
                         //Main.Context.Logger.Log($"BlueprintAbilityResource_RedirectToUnifiedResource executing for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");

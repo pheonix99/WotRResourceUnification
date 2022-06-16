@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WotRResourceUnification.NewComponents
+namespace ResourceUnification.NewComponents
 {
     [AllowedOn(typeof(BlueprintAbilityResource))]
-    public class ResourceUnificationRedirectComponent : BlueprintComponent
+    public class ResourceRedirectComponent : BlueprintComponent
     {
         
         public BlueprintAbilityResource RedirectTo

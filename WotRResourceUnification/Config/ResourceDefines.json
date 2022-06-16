@@ -1,18 +1,27 @@
 ﻿{
-  "ResourceEntries": [
+  "ClassScalingResourceEntries": [
     {
       "Key": "Ki",
-      "BaseResourceFeatureGuid": "e9590244effb4be4f830b1e3fffced13",
-      "AltResourceFeatureGuids": [
+
+      "ClassResourceFeatureGuids": [
+        "e9590244effb4be4f830b1e3fffced13",
         "ae98ab7bda409ef4bb39149a212d6732",
-        "5661f68399d77ba48bee60df871d7728"
+        "5661f68399d77ba48bee60df871d7728",
+        "29d8da445ee08ba409d9b7057986e7e7"
+      ],
+      "NonClassResourceFeatureGuids": [
+
       ]
     },
     {
       "Key": "ArcanePool",
-      "BaseResourceFeatureGuid": "3ce9bb90749c21249adc639031d5eed1",
-      "AltResourceFeatureGuids": [
+
+      "ClassResourceFeatureGuids": [
+        "3ce9bb90749c21249adc639031d5eed1",
         "95e04a9e86aa9e64dad7122625b79c62"
+      ],
+      "NonClassResourceFeatureGuids": [
+
       ]
 
     }

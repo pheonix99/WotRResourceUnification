@@ -1,16 +1,19 @@
 ﻿using HarmonyLib;
 using Kingmaker;
+using Kingmaker.Armies.TacticalCombat;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Root;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.PubSubSystem;
 using Kingmaker.UnitLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WotRResourceUnification.NewComponents;
+using ResourceUnification.NewComponents;
 
-namespace WotRResourceUnification.ModifiedComponents
+namespace ResourceUnification.ModifiedComponents
 {
 
 	class PatchBlueprintAbilityResource
@@ -26,11 +29,14 @@ namespace WotRResourceUnification.ModifiedComponents
 
 				try
 				{
-
-
-					if (__instance.Components.OfType<AltAbilityBonusStatUnlockComponent>().Any(x => x.Active(unit)))
+					
+					if (__instance.Components.OfType<ImprovedAbilityResourceCalc>().Any())
+                    {
+						
+                    }
+					else if (__instance.Components.OfType<ResourceSourceInfoComponent>().Any(x => x.Active(unit)))
 					{
-						Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, entering with {__result}");
+						//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, entering with {__result}");
 						int reduce = 0;
 						if (__instance.m_MaxAmount.IncreasedByStat)//Compute base stat result
 						{
@@ -38,7 +44,7 @@ namespace WotRResourceUnification.ModifiedComponents
 							if (modifiableValueAttributeStat != null)
 							{
 								reduce += modifiableValueAttributeStat.Bonus;
-								Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, reducing by {reduce} to cancel {__instance.m_MaxAmount.ResourceBonusStat}");
+								//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, reducing by {reduce} to cancel {__instance.m_MaxAmount.ResourceBonusStat}");
 							}
 							else
 							{
@@ -47,14 +53,14 @@ namespace WotRResourceUnification.ModifiedComponents
 						}
 						__result -= reduce;
 						int increase = 0;
-						foreach (var t in __instance.Components.OfType<AltAbilityBonusStatUnlockComponent>().Where(x => x.Active(unit)))
+						foreach (var t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
 						{
 							int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
 							increase = Math.Max((statVal), increase);
-							Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.name} offering {statVal}");
+							//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.name} offering {statVal}");
 						}
 						__result += increase;
-						Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, final selected increase is {increase}, total is {__result}");
+						//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, final selected increase is {increase}, total is {__result}");
 
 
 					}
@@ -73,17 +79,113 @@ namespace WotRResourceUnification.ModifiedComponents
 		[HarmonyPatch(typeof(BlueprintAbilityResource), "GetMaxAmount")]
 		static class BlueprintAbilityResource_RedirectToUnifiedResource
 		{
+			[HarmonyPriority(Priority.Normal)]
 			public static bool Prefix(ref int __result, BlueprintAbilityResource __instance, UnitDescriptor unit)
 			{
+				
+
 				try
 				{
-					var redirect = __instance.Components.OfType<ResourceUnificationRedirectComponent>().FirstOrDefault();
-					if (redirect != null)
+						
+					if (TacticalCombatHelper.IsActive && BlueprintRoot.Instance.TacticalCombat.LeaderManaResource == __instance)
 					{
-						Main.Context.Logger.Log($"BlueprintAbilityResource_RedirectToUnifiedResource executing for {__instance.Name} on {unit.CharacterName}");
-						__result = redirect.RedirectTo.GetMaxAmount(unit);
+						return true;
+					}
+
+					
+					
+					var customHandler = __instance.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+					if (customHandler != null)
+                    {
+						//Main.Context.Logger.Log($"Starting Prefix Custom Logic");
+						double runningTotal = 0;
+						
+						float otherClassMultiplier = customHandler.OtherClassesModifier;
+						if (customHandler.UsesStat || __instance.Components.OfType<ResourceSourceInfoComponent>().Any())
+                        {
+							int increase = 0;
+							foreach (var t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
+							{
+								int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
+								increase = Math.Max((statVal), increase);
+								//Main.Context.Logger.Log($"Prefix ver ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.m_Unlock.NameSafe()} offering {statVal}");
+							}
+							runningTotal += increase;
+						}
+
+						int bestStartingIncrease = customHandler.BaseValue;
+						foreach (var charClass in unit.Progression.Classes)
+						{
+							//Main.Context.Logger.Log($"Assessing {charClass.CharacterClass.Name} on {unit.CharacterName}");
+							int found = 0;
+							double best = 0;
+							if (customHandler.classEntries.TryGetValue(charClass.CharacterClass.ToReference<BlueprintCharacterClassReference>(), out var classEntry))
+                            {
+
+								//Main.Context.Logger.Log($"ClassEntry found");
+								var entries = new List<ClassGainSubEntry>();
+								foreach(var v in classEntry.archetypeEntries)
+                                {
+									if (v.Applies(charClass))
+                                    {
+										entries.Add(v);
+                                    }
+                                }
+								if (classEntry.vanilla != null && classEntry.vanilla.Applies(charClass))
+                                {
+									entries.Add(classEntry.vanilla);
+                                }
+
+
+								
+								found = entries.Count;
+								if (found == 0)
+								{
+									best = charClass.Level * otherClassMultiplier;
+									//Main.Context.Logger.Log($"Applicable entries for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+								}
+								else
+								{
+
+
+									foreach (var entry in entries)
+									{
+										bestStartingIncrease = Math.Max(bestStartingIncrease, entry.StartIncrease);
+										if (entry.PerLevel)
+										{
+											best = Math.Max(best, entry.IncreasePerTick * charClass.Level);
+										}
+										else
+                                        {
+											//Main.Context.Logger.Log($"LevelStep is {entry.LevelStep}");
+											best = Math.Max(best, (double)entry.IncreasePerTick * ((double)charClass.Level - (double)entry.StartLevel) / (double)entry.LevelStep);
+                                        }
+									}
+								}
+                            }
+                            else
+                            {
+								//Main.Context.Logger.Log($"Entry for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+								best += charClass.Level * otherClassMultiplier;
+							}
+							
+							runningTotal += best;
+							//Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, class {charClass.CharacterClass.Name} provided {best}: total is {runningTotal}");
+						}
+						runningTotal += bestStartingIncrease;
+						int bonus = 0;
+						EventBus.RaiseEvent<IResourceAmountBonusHandler>(unit.Unit, delegate (IResourceAmountBonusHandler h)
+						{
+							h.CalculateMaxResourceAmount(__instance, ref bonus);
+						});
+						__result = Math.Max(__instance.m_Min, __instance.ApplyMinMax((int)runningTotal) + bonus);
+						//Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, total is {__result}");
 						return false;
 					}
+					else
+                    {
+						return true;
+                    }
 				}
 				catch (Exception e)
 				{

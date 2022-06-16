@@ -8,8 +8,8 @@
     <ProjectGuid>{9C1B5F62-500D-44F1-8DEA-DA49682A0F91}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WotRResourceUnification</RootNamespace>
-    <AssemblyName>WotRResourceUnification</AssemblyName>
+    <RootNamespace>ResourceUnification</RootNamespace>
+    <AssemblyName>ResourceUnification</AssemblyName>
     <LangVersion>latest</LangVersion>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -108,7 +108,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Compile Include="Content\ModifyTools.cs" />
-    <Compile Include="Content\Unification.cs" />
+    <Compile Include="Content\LevelScalingUnification.cs" />
+    <Compile Include="Content\ResourceFeatureInfo.cs" />
     <Compile Include="Content\Unifications.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ModifiedComponents\PatchAbilityResourceLogic.cs" />
@@ -116,9 +117,10 @@
     <Compile Include="ModifiedComponents\PatchBlueprintAbilityResource.cs" />
     <Compile Include="ModifiedComponents\PatchUnitAbilityResourceCollection.cs" />
     <Compile Include="ModLogic\UnificationModContext.cs" />
-    <Compile Include="NewComponents\AltAbilityBonusStatUnlockComponent.cs" />
+    <Compile Include="NewComponents\AddResourceIfNotHasResourceComponent.cs" />
+    <Compile Include="NewComponents\ResourceSourceInfoComponent.cs" />
     <Compile Include="NewComponents\ExtendedAmount.cs" />
-    <Compile Include="NewComponents\ResourceUnificationRedirectComponent.cs" />
+    <Compile Include="NewComponents\ResourceRedirectComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UMMSettingsUI.cs" />
   </ItemGroup>

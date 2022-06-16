@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TabletopTweaks.Core.Utilities;
 using UnityModManagerNet;
-using WotRResourceUnification.ModLogic;
+using ResourceUnification.ModLogic;
 
-namespace WotRResourceUnification
+namespace ResourceUnification
 {
     static class Main
     {

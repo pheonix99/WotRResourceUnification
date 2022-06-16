@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WotRResourceUnification.NewComponents;
+using ResourceUnification.NewComponents;
 
-namespace WotRResourceUnification.Content
+namespace ResourceUnification.Content
 {
-    public class Unification
+    public class LevelScalingUnification
     {
         public string Name;
         public BlueprintFeatureReference BaseFeature;
@@ -18,13 +18,14 @@ namespace WotRResourceUnification.Content
         public bool UsesStat;
         public List<BlueprintAbilityResourceReference> UnifiedResources = new();
         public Dictionary<BlueprintFeatureReference, StatType> AltStatUnlocks = new();
-        
-        public List<Tuple<ExtendedAmount, BlueprintFeatureReference>> BaseAmounts = new();
 
-        public Unification(string name, BlueprintFeatureReference baseFeature, BlueprintAbilityResourceReference baseResource, bool usesStat, StatType baseFeatureStat)
+        public List<BlueprintFeatureReference> ResourceFeatures = new();
+
+        public LevelScalingUnification(string name, BlueprintFeatureReference baseFeature, BlueprintAbilityResourceReference baseResource, bool usesStat, StatType baseFeatureStat)
         {
             Name = name;
             BaseFeature = baseFeature;
+            ResourceFeatures.Add(baseFeature);
             BaseResource = baseResource;
             UsesStat = usesStat;
             BaseFeatureStat = baseFeatureStat;

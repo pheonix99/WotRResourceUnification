@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TabletopTweaks.Core.ModLogic;
 using UnityModManagerNet;
-using WotRResourceUnification.Config;
+using ResourceUnification.Config;
 
-namespace WotRResourceUnification.ModLogic
+namespace ResourceUnification.ModLogic
 {
     class UnificationModContext : ModContextBase
     {
@@ -17,8 +17,8 @@ namespace WotRResourceUnification.ModLogic
 
         public UnificationModContext(UnityModManager.ModEntry modEntry) : base(modEntry)
         {
-            LoadBlueprints("WotRResourceUnification.Config", this);
-            LoadSettings("ResourceDefines.json", "WotRResourceUnification.Config", ref ResourceDefines);
+            LoadBlueprints("ResourceUnification.Config", this);
+            LoadSettings("ResourceDefines.json", "ResourceUnification.Config", ref ResourceDefines);
             
        }
 

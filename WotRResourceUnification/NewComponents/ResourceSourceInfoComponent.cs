@@ -9,13 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WotRResourceUnification.NewComponents
+namespace ResourceUnification.NewComponents
 {
     [AllowedOn(typeof(BlueprintAbilityResource))]
     [AllowMultipleComponents]
-    public class AltAbilityBonusStatUnlockComponent : BlueprintComponent
+    public class ResourceSourceInfoComponent : BlueprintComponent
     {
         public StatType AltStat;
+
+        public bool IsClassFeature;
 
         public BlueprintFeature Unlock
         {

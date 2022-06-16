@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TabletopTweaks.Core.Utilities;
 
-namespace WotRResourceUnification.Content
+namespace ResourceUnification.Content
 {
     class Unifications
     {
@@ -28,16 +28,17 @@ namespace WotRResourceUnification.Content
                 {
                     Main.Context.Logger.LogHeader($"Doing Built In Unifications");
                     //ScaledFist();
-                    foreach(var v in Main.Context.ResourceDefines.ResourceEntries)
+                    foreach(var v in Main.Context.ResourceDefines.ClassScalingResourceEntries)
                     {
-                        bool mainSucceded = ModifyTools.RegistrationWizardForGUID(v.Key, v.BaseResourceFeatureGuid);
-                        if (mainSucceded)
-                        {
-                            foreach(string s in v.AltResourceFeatureGuids)
+                        
+                            foreach(string s in v.ClassResourceFeatureGuids)
                             {
-                                ModifyTools.RegistrationWizardForGUID(v.Key, s);
+                                ModifyTools.RegistrationWizardForGUID(v.Key, s, true);
                             }
-                        }
+                                foreach(string s in v.NonClassResourceFeatureGuids)
+                            {
+                                ModifyTools.RegistrationWizardForGUID(v.Key, s, false);
+                            }
 
 
                     }
@@ -45,7 +46,7 @@ namespace WotRResourceUnification.Content
 
 
 
-
+                    ModifyTools.Finish();
 
 
                 }
@@ -58,22 +59,6 @@ namespace WotRResourceUnification.Content
         }
 
 
-        private static void ScaledFist()
-        {
-            var KiPower = BlueprintTools.GetBlueprint<BlueprintAbilityResource>("9d9c90a9a1f52d04799294bf91c80a82");
-            var ScaledFistPower = BlueprintTools.GetBlueprint<BlueprintAbilityResource>("7d002c1025fbfe2458f1509bf7a89ce1");
-            var KiPowerFeature = BlueprintTools.GetBlueprint<BlueprintFeature>("e9590244effb4be4f830b1e3fffced13");
-            var ScaledFistKiPowerFeature = BlueprintTools.GetBlueprint<BlueprintFeature>("ae98ab7bda409ef4bb39149a212d6732");
-
-            ModifyTools.RegistrationWizard("Ki", KiPowerFeature.ToReference<BlueprintFeatureReference>());
-
-            ModifyTools.RegistrationWizard("Ki", ScaledFistKiPowerFeature.ToReference<BlueprintFeatureReference>());
-            ModifyTools.RegistrationWizardForGUID("Ki", "5661f68399d77ba48bee60df871d7728");
-
-            //ModifyTools.RegisterAltStat(KiPower.ToReference<BlueprintAbilityResourceReference>(), Kingmaker.EntitySystem.Stats.StatType.Wisdom, KiPowerFeature.ToReference<BlueprintFeatureReference>());
-            //ModifyTools.RegisterAltStat(KiPower.ToReference<BlueprintAbilityResourceReference>(), Kingmaker.EntitySystem.Stats.StatType.Charisma, ScaledFistKiPowerFeature.ToReference<BlueprintFeatureReference>());
-
-            //ModifyTools.RegisterResourceRedirect(ScaledFistPower.ToReference<BlueprintAbilityResourceReference>(), KiPower.ToReference<BlueprintAbilityResourceReference>());
-        }
+        
     }
 }

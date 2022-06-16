@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityModManagerNet;
-using WotRResourceUnification.Content;
+using ResourceUnification.Content;
 
-namespace WotRResourceUnification
+namespace ResourceUnification
 {
     class UMMSettingsUI
     {
