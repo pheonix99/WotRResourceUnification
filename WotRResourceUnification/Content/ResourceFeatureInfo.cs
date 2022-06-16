@@ -12,6 +12,9 @@ namespace ResourceUnification.Content
         public BlueprintFeatureReference Feature;
         public string Key;
         public bool FromClass;
+        public BlueprintAbilityResourceReference Resource;
+        public BlueprintAbilityResource.Amount Amount;
+
 
         public ResourceFeatureInfo(string key, BlueprintFeatureReference feature,  bool fromClass)
         {

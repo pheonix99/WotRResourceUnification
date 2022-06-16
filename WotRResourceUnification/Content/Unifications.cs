@@ -27,17 +27,23 @@ namespace ResourceUnification.Content
                 try
                 {
                     Main.Context.Logger.LogHeader($"Doing Built In Unifications");
+
+                    ModifyTools.RegisterForProcessingAsBaseGameAnchor("Ki", "e9590244effb4be4f830b1e3fffced13");
+                    ModifyTools.RegisterForProcessingAsBaseGameAnchor("ArcanePool", "3ce9bb90749c21249adc639031d5eed1");
+                    
+                    ModifyTools.RegisterForProcessing("Ki", "ae98ab7bda409ef4bb39149a212d6732", true);
+                    ModifyTools.RegisterForProcessing("ArcanePool", "95e04a9e86aa9e64dad7122625b79c62", true);
                     //ScaledFist();
-                    foreach(var v in Main.Context.ResourceDefines.ClassScalingResourceEntries)
+                    foreach (var v in Main.Context.ResourceDefines.ClassScalingResourceEntries)
                     {
                         
                             foreach(string s in v.ClassResourceFeatureGuids)
                             {
-                                ModifyTools.RegistrationWizardForGUID(v.Key, s, true);
+                                ModifyTools.RegisterForProcessing(v.Key, s, true);
                             }
                                 foreach(string s in v.NonClassResourceFeatureGuids)
                             {
-                                ModifyTools.RegistrationWizardForGUID(v.Key, s, false);
+                                ModifyTools.RegisterForProcessing(v.Key, s, false);
                             }
 
 

@@ -12,23 +12,21 @@ namespace ResourceUnification.Content
     public class LevelScalingUnification
     {
         public string Name;
-        public BlueprintFeatureReference BaseFeature;
-        public BlueprintAbilityResourceReference BaseResource;
-        public StatType BaseFeatureStat;
+        public ResourceFeatureInfo BaseInfo;
+        
         public bool UsesStat;
         public List<BlueprintAbilityResourceReference> UnifiedResources = new();
-        public Dictionary<BlueprintFeatureReference, StatType> AltStatUnlocks = new();
+        public Dictionary<BlueprintFeatureReference, StatType> StatUnlocks = new();
 
-        public List<BlueprintFeatureReference> ResourceFeatures = new();
+        public List<ResourceFeatureInfo> ProcessedResourceFeatures = new();
+        public List<ResourceFeatureInfo> UnprocessedResourceAddingFeatures = new();
+        
+     
 
-        public LevelScalingUnification(string name, BlueprintFeatureReference baseFeature, BlueprintAbilityResourceReference baseResource, bool usesStat, StatType baseFeatureStat)
+
+        public LevelScalingUnification(string name)
         {
             Name = name;
-            BaseFeature = baseFeature;
-            ResourceFeatures.Add(baseFeature);
-            BaseResource = baseResource;
-            UsesStat = usesStat;
-            BaseFeatureStat = baseFeatureStat;
         }
     }
 }
