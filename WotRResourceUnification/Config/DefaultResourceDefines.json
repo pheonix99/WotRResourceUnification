@@ -4,9 +4,16 @@
       "Key": "Ki",
 
       "ClassResourceFeatureGuids": [
+        {
+          "ResourceAdderFeatureGuid": "5661f68399d77ba48bee60df871d7728"//Ninja
+        },
+        {
+          "ResourceAdderFeatureGuid": "29d8da445ee08ba409d9b7057986e7e7"//Warpriest from homebrew archetypes
+        },
+        {
+          "ResourceAdderFeatureGuid": "4a4470b9029922f4f95eb156947249a8"//Hellcat from homebrew archetypes
+        }
         
-        "5661f68399d77ba48bee60df871d7728",
-        "29d8da445ee08ba409d9b7057986e7e7"
       ],
       "NonClassResourceFeatureGuids": [
 
@@ -16,12 +23,26 @@
       "Key": "ArcanePool",
 
       "ClassResourceFeatureGuids": [
-        
+
       ],
       "NonClassResourceFeatureGuids": [
 
       ]
 
+    },
+    {
+      "Key": "AlchemistBomb",
+
+      "ClassResourceFeatureGuids": [
+        {
+          "ResourceAdderFeatureGuid": "c65b2fcdead689147ab7f40fa92c4dc6",
+          "WrapperGuid": "cfd5b82d506197844904287e45619f5e"
+        }//Rappa from Ninja mod
+        
+      ],
+      "NonClassResourceFeatureGuids": [
+
+      ]
     }
   ]
 }

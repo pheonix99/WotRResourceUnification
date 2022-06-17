@@ -30,7 +30,9 @@ namespace ResourceUnification.ModLogic
                     string path = mod.Path + Path.DirectorySeparatorChar + "UserSettings" + Path.DirectorySeparatorChar + "ResourceDefines.json";
                     if (File.Exists(Path.Combine(mod.Path + "ResourceDefines.json")))
                     {
-                        
+                        var newDefine = new ResourceDefines();
+                        LoadForeignSettings<ResourceDefines>("ResourceDefines.json", mod, ref newDefine);
+                        OtherModDefines.Add(newDefine);
                     }
                 }
             }

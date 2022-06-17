@@ -15,12 +15,13 @@ namespace ResourceUnification.Content
         public ResourceFeatureInfo BaseInfo;
         
         public bool UsesStat;
-        public List<BlueprintAbilityResourceReference> UnifiedResources = new();
+        public List<BlueprintAbilityResourceReference> ResourcesCovered = new();
         public Dictionary<BlueprintFeatureReference, StatType> StatUnlocks = new();
 
         public List<ResourceFeatureInfo> ProcessedResourceFeatures = new();
         public List<ResourceFeatureInfo> UnprocessedResourceAddingFeatures = new();
         
+
      
 
 

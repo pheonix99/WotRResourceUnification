@@ -1,15 +1,38 @@
 # Wrath Of The Righteous Resource Unification
-What is this?
+
+##What is this?
 
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
-For instance, the default configuration merges Ki from Monk, Scaled Fist, and the mod-added Ninja class and Sacred Fist Warpriest Archetype into one resource scaling with total level and the better of wis (if you have non-Scaled-Fist monk levels) and CHA if you have Scaled Fist or Ninja levels.
-
-It does the same to Arcane Pool and Eldritch Pool.
-
-You can make it do the same to more resources by adding new entries in ResourceDefines.json using the existing ones as templates. Back up customized files before updating, please - it'll be overwritten at the moment.
-
-It does absolutely nothing else.
+## Changelog
+1.1: 
+Improved internal logic and autoparsing.
+Improved config.
 
 
 
+
+##Default Configuration:
+Monk Ki: Combines normal Monk, Scaled Fist, Sacred Fist and Hellcat from Homebrew Archetypes, and Ninja from the Ninja mod.
+Magus Arcane Pool: Combines normal Magus and Eldritch Scion. 
+Special note: The UMM menu status report will tell you that TTT Bladebound is not having its arcane pool progression reduced. Ignore this, TTT's method of handling that isn't detected but isn't blocked either.
+
+Alchemist Bombs: Combines normal Alchmist and Rappa from the Ninja mod.
+
+Arcanist: Imposes mod resource scaling which should fix an issue with Arcanist/Arcane Enforce multiclasses.
+
+##Customization
+You can make the mod handle more resources by adding the guids to the ResourceDefines.json files in UMM mod root directories.
+
+ResourceAdderFeatureGuid contains the Guid of the feature granting the resource via AddAbilityResource. It needs to be in the class/archetype progression to work alone.
+If there is a feature that grants the actual resource-granting feature as with Alchemist Bombs, put the guid of that intermediate feature into WrapperGuid
+
+It doesn't currently matter if you use ClassResourceFeatureGuids or NonClassResourceFeatureGuids.
+It will eventually - put class feature from leveling in ClassResourceFeatureGuids and anything else that grants a resource like the Rogue Ki Pool Talent into NonClassResourceFeatureGuids
+
+Features that increase existing resources or alter costs should be handled automagically by my code, you don't need to do anything with them.
+
+##Uninstalling:
+Just remove it.
+
+It doesn't add any blueprints or make any state changes, just redirects things.

@@ -36,7 +36,9 @@ namespace ResourceUnification.ModifiedComponents
                     }
 					else if (__instance.Components.OfType<ResourceSourceInfoComponent>().Any(x => x.Active(unit)))
 					{
-						//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, entering with {__result}");
+#if DEBUG
+						Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, entering with {__result}");
+#endif
 						int reduce = 0;
 						if (__instance.m_MaxAmount.IncreasedByStat)//Compute base stat result
 						{
@@ -44,7 +46,9 @@ namespace ResourceUnification.ModifiedComponents
 							if (modifiableValueAttributeStat != null)
 							{
 								reduce += modifiableValueAttributeStat.Bonus;
-								//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, reducing by {reduce} to cancel {__instance.m_MaxAmount.ResourceBonusStat}");
+#if DEBUG
+								Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, reducing by {reduce} to cancel {__instance.m_MaxAmount.ResourceBonusStat}");
+#endif
 							}
 							else
 							{
@@ -57,10 +61,14 @@ namespace ResourceUnification.ModifiedComponents
 						{
 							int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
 							increase = Math.Max((statVal), increase);
-							//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.name} offering {statVal}");
+#if DEBUG
+							Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.name} offering {statVal}");
+#endif
 						}
 						__result += increase;
-						//Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, final selected increase is {increase}, total is {__result}");
+#if DEBUG
+						Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, final selected increase is {increase}, total is {__result}");
+#endif
 
 
 					}
@@ -77,7 +85,7 @@ namespace ResourceUnification.ModifiedComponents
 		}
 
 		[HarmonyPatch(typeof(BlueprintAbilityResource), "GetMaxAmount")]
-		static class BlueprintAbilityResource_RedirectToUnifiedResource
+		static class BlueprintAbilityResource_ExecuteCustomComputation
 		{
 			[HarmonyPriority(Priority.Normal)]
 			public static bool Prefix(ref int __result, BlueprintAbilityResource __instance, UnitDescriptor unit)
@@ -97,7 +105,9 @@ namespace ResourceUnification.ModifiedComponents
 					var customHandler = __instance.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
 					if (customHandler != null)
                     {
-						//Main.Context.Logger.Log($"Starting Prefix Custom Logic");
+#if DEBUG
+						Main.Context.Logger.Log($"Starting Prefix Custom Logic on {__instance.name} with stat logic");
+#endif
 						double runningTotal = 0;
 						
 						float otherClassMultiplier = customHandler.OtherClassesModifier;
@@ -108,21 +118,33 @@ namespace ResourceUnification.ModifiedComponents
 							{
 								int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
 								increase = Math.Max((statVal), increase);
-								//Main.Context.Logger.Log($"Prefix ver ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.m_Unlock.NameSafe()} offering {statVal}");
+#if DEBUG
+								Main.Context.Logger.Log($"Prefix ver ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.m_Unlock.NameSafe()} offering {statVal}");
+#endif
 							}
 							runningTotal += increase;
 						}
-
-						int bestStartingIncrease = customHandler.BaseValue;
+#if DEBUG
+						Main.Context.Logger.Log($"Moving to level logic on {__instance.name} with stat logic");
+#endif
+						
+						int bestBaseValue = 0;
+						int bestMinClassValue = 0;
+						double classRunningTotal = 0;
 						foreach (var charClass in unit.Progression.Classes)
 						{
-							//Main.Context.Logger.Log($"Assessing {charClass.CharacterClass.Name} on {unit.CharacterName}");
+#if DEBUG
+							Main.Context.Logger.Log($"Assessing {charClass.CharacterClass.Name} on {unit.CharacterName}");
+							
+#endif
 							int found = 0;
 							double best = 0;
 							if (customHandler.classEntries.TryGetValue(charClass.CharacterClass.ToReference<BlueprintCharacterClassReference>(), out var classEntry))
                             {
 
-								//Main.Context.Logger.Log($"ClassEntry found");
+#if DEBUG
+								Main.Context.Logger.Log($"ClassEntry found");
+#endif
 								var entries = new List<ClassGainSubEntry>();
 								foreach(var v in classEntry.archetypeEntries)
                                 {
@@ -141,8 +163,11 @@ namespace ResourceUnification.ModifiedComponents
 								found = entries.Count;
 								if (found == 0)
 								{
+
 									best = charClass.Level * otherClassMultiplier;
-									//Main.Context.Logger.Log($"Applicable entries for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+#if DEBUG
+									Main.Context.Logger.Log($"Applicable entries for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+#endif
 								}
 								else
 								{
@@ -150,36 +175,52 @@ namespace ResourceUnification.ModifiedComponents
 
 									foreach (var entry in entries)
 									{
-										bestStartingIncrease = Math.Max(bestStartingIncrease, entry.StartIncrease);
+										bestBaseValue = Math.Max(bestBaseValue, entry.BaseValue);
 										if (entry.PerLevel)
 										{
 											best = Math.Max(best, entry.IncreasePerTick * charClass.Level);
 										}
 										else
                                         {
-											//Main.Context.Logger.Log($"LevelStep is {entry.LevelStep}");
+#if DEBUG
+											Main.Context.Logger.Log($"LevelStep is {entry.LevelStep}");
+#endif
+
+											bestMinClassValue = Math.Max(entry.MinClassLevelIncrease, bestMinClassValue);
 											best = Math.Max(best, (double)entry.IncreasePerTick * ((double)charClass.Level - (double)entry.StartLevel) / (double)entry.LevelStep);
+											if (charClass.Level >= entry.StartLevel)
+                                            {
+												best += entry.StartIncrease;
+                                            }
                                         }
 									}
 								}
                             }
                             else
                             {
-								//Main.Context.Logger.Log($"Entry for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+#if DEBUG
+								Main.Context.Logger.Log($"Entry for {charClass.CharacterClass.Name} not found on  on {__instance.name}");
+#endif
 								best += charClass.Level * otherClassMultiplier;
 							}
+							classRunningTotal += best;
 							
-							runningTotal += best;
-							//Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, class {charClass.CharacterClass.Name} provided {best}: total is {runningTotal}");
+#if DEBUG
+							Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, class {charClass.CharacterClass.Name} provided {best}: total is {runningTotal}");
+#endif
 						}
-						runningTotal += bestStartingIncrease;
+
+						runningTotal += (double)bestBaseValue;
+						runningTotal += Math.Max(classRunningTotal, (double) bestMinClassValue);
 						int bonus = 0;
 						EventBus.RaiseEvent<IResourceAmountBonusHandler>(unit.Unit, delegate (IResourceAmountBonusHandler h)
 						{
 							h.CalculateMaxResourceAmount(__instance, ref bonus);
 						});
 						__result = Math.Max(__instance.m_Min, __instance.ApplyMinMax((int)runningTotal) + bonus);
-						//Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, total is {__result}");
+#if DEBUG
+						Main.Context.Logger.Log($"Custom class calc logic executing for {__instance.name} on {unit.CharacterName}, total is {__result}");
+#endif
 						return false;
 					}
 					else

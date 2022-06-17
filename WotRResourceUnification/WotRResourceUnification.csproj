@@ -115,8 +115,6 @@
     <Compile Include="ModifiedComponents\PatchBlueprintAbilityResource.cs" />
     <Compile Include="ModifiedComponents\PatchUnitAbilityResourceCollection.cs" />
     <Compile Include="ModLogic\UnificationModContext.cs" />
-    <Compile Include="NewComponents\AddExistingAbilityResource.cs" />
-    <Compile Include="NewComponents\AddResourceIfNotHasResourceComponent.cs" />
     <Compile Include="NewComponents\ResourceSourceInfoComponent.cs" />
     <Compile Include="NewComponents\ExtendedAmount.cs" />
     <Compile Include="NewComponents\ResourceRedirectComponent.cs" />

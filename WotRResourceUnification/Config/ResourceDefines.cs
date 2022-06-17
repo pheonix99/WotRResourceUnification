@@ -28,11 +28,13 @@ namespace ResourceUnification.Config
     {
         public string Key;
         
-        public List<string> ClassResourceFeatureGuids;
-        public List<string> NonClassResourceFeatureGuids;
+        public List<GameResourceEntry> ClassResourceFeatureGuids;
+        public List<GameResourceEntry> NonClassResourceFeatureGuids;
     }
     public class GameResourceEntry
     {
-
+        public string ResourceAdderFeatureGuid;
+        public string WrapperGuid;
+       
     }
 }
