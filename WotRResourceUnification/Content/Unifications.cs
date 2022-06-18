@@ -46,8 +46,7 @@ namespace ResourceUnification.Content
                     ModifyTools.RegisterForProcessing("Ki", "ae98ab7bda409ef4bb39149a212d6732", true);
                     ModifyTools.RegisterForProcessing("ArcanePool", "95e04a9e86aa9e64dad7122625b79c62", true);//EScion
                     ModifyTools.RegisterForProcessing("ArcanePool", "466c40aba50096341bf6532b1e53e8bd", true);//Armored Battlemage
-                    ModifyTools.RegisterForProcessing("ArcanePool", new GameResourceEntry { ResourceAdderFeatureGuid = "3ce9bb90749c21249adc639031d5eed1", WrapperGuid = "dea27ccfda4549f4bcc7ac993e83f4b9" }, true);//TTT Bladebound
-                    //ModifyTools.RegisterForProcessing("ArcanePool", "dea27ccfda4549f4bcc7ac993e83f4b9" , true);
+                     
                     
                     ModifyTools.RegisterForProcessing("ArcanistArcaneReservoir", "9d1e2212594cf47438fff2fa3477b954", true);
                     //ModifyTools.RegisterForProcessing("ArcanistArcaneReservoir", new GameResourceEntry { ResourceAdderFeatureGuid = "55db1859bd72fd04f9bd3fe1f10e4cbb", WrapperGuid = "9d1e2212594cf47438fff2fa3477b954" }, true);

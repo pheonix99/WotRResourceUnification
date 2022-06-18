@@ -23,7 +23,10 @@
       "Key": "ArcanePool",
 
       "ClassResourceFeatureGuids": [
-
+        {
+          "ResourceAdderFeatureGuid":"3ce9bb90749c21249adc639031d5eed1",
+          "WrapperGuid": "dea27ccfda4549f4bcc7ac993e83f4b9"
+        }//TTT Bladebound
       ],
       "NonClassResourceFeatureGuids": [
 

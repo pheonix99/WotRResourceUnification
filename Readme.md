@@ -10,16 +10,19 @@ Improved internal logic and autoparsing.
 Improved config.
 
 
-
-
 ##Default Configuration:
 Monk Ki: Combines normal Monk, Scaled Fist, Sacred Fist and Hellcat from Homebrew Archetypes, and Ninja from the Ninja mod.
 Magus Arcane Pool: Combines normal Magus and Eldritch Scion. 
-Special note: The UMM menu status report will tell you that TTT Bladebound is not having its arcane pool progression reduced. Ignore this, TTT's method of handling that isn't detected but isn't blocked either.
+
 
 Alchemist Bombs: Combines normal Alchmist and Rappa from the Ninja mod.
 
 Arcanist: Imposes mod resource scaling which should fix an issue with Arcanist/Arcane Enforce multiclasses.
+
+##Known issues:
+The UMM menu status report will tell you that TTT Bladebound is not having its arcane pool progression reduced. Ignore this, TTT's method of handling that isn't detected but isn't blocked either.
+Archetypes that replace
+
 
 ##Customization
 You can make the mod handle more resources by adding the guids to the ResourceDefines.json files in UMM mod root directories.
