@@ -38,7 +38,7 @@ namespace ResourceUnification.Content
 
        public static void RegisterForProcessing(string key, string guid, bool fromClass)
         {
-            var BP = BlueprintTools.GetBlueprintReference<BlueprintFeatureReference>(guid);
+            var BP = BlueprintTools.GetBlueprint<BlueprintFeature>(guid)?.ToReference<BlueprintFeatureReference>();
             if (BP == null)
             {
                 NoteFailure($"Unification Base Wizard failed on {guid} for {key}: no BP");
@@ -50,18 +50,19 @@ namespace ResourceUnification.Content
 
         public static void RegisterForProcessing(string key, GameResourceEntry gre, bool fromClass)
         {
-            var BP = BlueprintTools.GetBlueprintReference<BlueprintFeatureReference>(gre.ResourceAdderFeatureGuid);
-            BlueprintFeatureReference altBP = null;
-            if (!string.IsNullOrWhiteSpace(gre.WrapperGuid))
-            {
-                 altBP = BlueprintTools.GetBlueprintReference<BlueprintFeatureReference>(gre.WrapperGuid);
-            }
+            var BP = BlueprintTools.GetBlueprint<BlueprintFeature>(gre.ResourceAdderFeatureGuid);
             if (BP == null)
             {
                 NoteFailure($"Unification Base Wizard failed on {gre.ResourceAdderFeatureGuid} for {key}: no BP");
                 return;
             }
-            RegisterForProcessing(new ResourceFeatureInfo(key, BP, fromClass, altBP));
+            BlueprintFeatureReference altBP = null;
+            if (!string.IsNullOrWhiteSpace(gre.WrapperGuid))
+            {
+                 altBP = BlueprintTools.GetBlueprint<BlueprintFeature>(gre.WrapperGuid)?.ToReference<BlueprintFeatureReference>();
+            }
+            
+            RegisterForProcessing(new ResourceFeatureInfo(key, BP.ToReference<BlueprintFeatureReference>(), fromClass, altBP));
 
         }
 
