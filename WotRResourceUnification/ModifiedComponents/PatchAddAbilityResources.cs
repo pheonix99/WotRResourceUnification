@@ -23,7 +23,9 @@ namespace ResourceUnification.ModifiedComponents
 					var redirect = __instance.m_Resource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
-						//Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}");
+#if DEBUG
+						Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}, redirect target is {redirect.RedirectTo.NameSafe()}");
+#endif
 						__result = redirect.RedirectTo;
 						
 					}

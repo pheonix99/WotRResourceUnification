@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ResourceUnification.NewComponents;
+using Kingmaker.UnitLogic.Abilities;
 
 namespace ResourceUnification.ModifiedComponents
 {
@@ -19,7 +20,15 @@ namespace ResourceUnification.ModifiedComponents
 		{
 			public static void Postfix(ref string __result, AbilityResourceLogic __instance)
 			{
-				__result = __result + " : " + __instance.RequiredResource.LocalizedName;
+				string name = __instance.RequiredResource.LocalizedName;
+				if (String.IsNullOrWhiteSpace(name))
+					name = __instance.RequiredResource.NameSafe();
+#if DEBUG
+				name = __instance.RequiredResource.NameSafe();
+#endif
+
+
+				__result = __result + " : " + name;
 			}
 		}
 		
@@ -31,10 +40,12 @@ namespace ResourceUnification.ModifiedComponents
 				try
 				{
 					
+
 					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
-						//Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}");
+						//Main.Context.Logger.Log($"Redirecting from {__result.NameSafe()} {__result.AssetGuidThreadSafe} to {redirect.RedirectTo.NameSafe()} {redirect.RedirectTo.AssetGuidThreadSafe}");
+
 						__result = redirect.RedirectTo;
 						
 					}
@@ -48,8 +59,15 @@ namespace ResourceUnification.ModifiedComponents
 				
 			}
 		}
-			
-		
+		[HarmonyPatch(typeof(AbilityResourceLogic), "IsAbilityRestrictionPassed")]
+		static class AbilityResourceLogic_IsAbilityRestrictionPassed
+		{
+			public static void Postfix(ref bool __result, AbilityResourceLogic __instance, AbilityData ability)
+			{
+				
+			}
+		}
+
 		[HarmonyPatch(typeof(ActivatableAbilityResourceLogic), "RequiredResource", MethodType.Getter)]
 		static class ActivatableAbilityResourceLogic_RedirectToUnifiedResource
 		{
@@ -61,7 +79,7 @@ namespace ResourceUnification.ModifiedComponents
 					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
-						//Main.Context.Logger.Log($"Attempting Resource Redirect on {__instance.OwnerBlueprint.NameSafe()}");
+
 						__result = redirect.RedirectTo;
 						
 					}

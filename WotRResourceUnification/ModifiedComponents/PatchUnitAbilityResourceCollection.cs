@@ -21,18 +21,30 @@ namespace ResourceUnification.ModifiedComponents
 
 
 
-            public static bool Prefix(UnitAbilityResource __result, UnitAbilityResourceCollection __instance, BlueprintScriptableObject blueprint)
+            public static void Postfix(UnitAbilityResource __result, UnitAbilityResourceCollection __instance, BlueprintScriptableObject blueprint)
             {
                 try
                 {
                     var redirect = blueprint.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
                     if (redirect != null)
                     {
-                        //Main.Context.Logger.Log($"BlueprintAbilityResource_RedirectToUnifiedResource executing for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
+#if DEBUG
+                        //Main.Context.Logger.Log($"UnitAbilityResourceCollection_RedirectGetResource executing for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
+#endif
 
-                        __instance.m_Resources.TryGetValue(redirect.RedirectTo, out var tempResult);
-                        __result = tempResult;
-                        return false;
+
+                        __instance.m_Resources.TryGetValue(redirect.RedirectTo as BlueprintScriptableObject, out var tempResult);;
+                        if (tempResult == null)
+                        {
+                            Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
+                            
+                           
+                        }
+                        else
+                        {
+                            __result = tempResult;
+                            
+                        }
                     }
                 }
                 catch(Exception e)
@@ -40,10 +52,31 @@ namespace ResourceUnification.ModifiedComponents
                     Main.Context.Logger.LogError(e, "Error In RedirectGetResource");
                 }
 
-                return true;
+                
 
             }
         }
+
+        [HarmonyPatch(typeof(UnitAbilityResourceCollection), "Add")]
+        static class SeeAddCall
+        {
+
+
+
+            public static bool Prefix(UnitAbilityResourceCollection __instance, BlueprintScriptableObject blueprint, bool restoreAmount)
+            {
+
+#if DEBUG
+                Main.Context.Logger.Log($"Prefix: Add called for {blueprint.NameSafe()}, redirected resource is {__instance.GetResource(blueprint)?.Blueprint?.NameSafe()}");
+#endif
+
+                return true;
+
+            }
+
+    
+        }
+
 
         //Everything else runs throuigh that
     }

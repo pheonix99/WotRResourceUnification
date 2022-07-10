@@ -31,7 +31,7 @@ namespace ResourceUnification
             {
                 var TabLevel = SetttingUI.TabLevel.Zero;
 
-                ModKit.UI.Div(0, 15);
+                UI.Div(0, 15);
                 UI.TabBar(ref selectedSubTab, () =>  UI.Label("Note: Entries show state of mod system, non-mod resource handling is not shown.") , ModifyTools.Unifications.Select(x => new NamedAction(x.Name, () =>
                 {
 
@@ -41,7 +41,7 @@ namespace ResourceUnification
                         foreach (var element in extended.classEntries)
                         {
                             UI.Label($"Class Entry: {element.Key.NameSafe()}".green().bold());
-                            ModKit.UI.Div(10, 15);
+                            UI.Div(10, 15);
                             if (element.Value.vanilla != null)
                             {
                                 UI.Label($"Base Class Resource Gain: {element.Value.vanilla.DisplayInfo()} Not for archetypes: {ModifyTools.MakeArcheLog(element.Value.vanilla.BlockedArchetypes)}");

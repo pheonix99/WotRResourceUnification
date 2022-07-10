@@ -32,8 +32,10 @@ namespace ResourceUnification.ModifiedComponents
 					
 					if (__instance.Components.OfType<ImprovedAbilityResourceCalc>().Any())
                     {
-						
-                    }
+#if DEBUG
+						Main.Context.Logger.Log($"ImprovedAbilityResourceCalc for {__instance.name} on {unit.CharacterName} gives {__result} in postfix");
+#endif
+					}
 					else if (__instance.Components.OfType<ResourceSourceInfoComponent>().Any(x => x.Active(unit)))
 					{
 #if DEBUG
@@ -116,10 +118,13 @@ namespace ResourceUnification.ModifiedComponents
 							int increase = 0;
 							foreach (var t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
 							{
+
+								int stat = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).ModifiedValue;
 								int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
+							
 								increase = Math.Max((statVal), increase);
 #if DEBUG
-								Main.Context.Logger.Log($"Prefix ver ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} from {t.m_Unlock.NameSafe()} offering {statVal}");
+								Main.Context.Logger.Log($"Prefix ver ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, alt stat candidate {t.AltStat} {stat} from {t.m_Unlock.NameSafe()} offering {statVal}");
 #endif
 							}
 							runningTotal += increase;

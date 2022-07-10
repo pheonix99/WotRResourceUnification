@@ -5,6 +5,10 @@
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
 ## Changelog
+1.2.0
+Fix for breaking change somewhere in Owlcat land.
+
+
 1.1.1
 Fix for not properly handing bad input GUIDs.
 
