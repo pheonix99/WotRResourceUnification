@@ -5,6 +5,9 @@
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
 ## Changelog
+1.2.1
+Should slightly improve perfomance and spam the logs less
+
 1.2.0
 Fix for breaking change somewhere in Owlcat land.
 
@@ -27,8 +30,7 @@ Alchemist Bombs: Combines normal Alchmist and Rappa from the Ninja mod.
 Arcanist: Imposes mod resource scaling which should fix an issue with Arcanist/Arcane Enforce multiclasses.
 
 ##Known issues:
-The UMM menu status report will tell you that TTT Bladebound is not having its arcane pool progression reduced. Ignore this, TTT's method of handling that isn't detected but isn't blocked either.
-Archetypes that replace
+Spurrious error messages in the logs about not being able to confirm stuff with Arcanist
 
 
 ##Customization

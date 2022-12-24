@@ -20,7 +20,7 @@ namespace ResourceUnification.Config
 
         public void OverrideSettings(IUpdatableSettings userSettings)
         {
-            var loadedSettings = userSettings as ResourceDefines;
+            ResourceDefines loadedSettings = userSettings as ResourceDefines;
             if (loadedSettings == null) { return; }
         }
     }

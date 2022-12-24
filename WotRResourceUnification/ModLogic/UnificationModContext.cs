@@ -23,14 +23,14 @@ namespace ResourceUnification.ModLogic
             LoadBlueprints("ResourceUnification.Config", this);
             LoadSettings("DefaultResourceDefines.json", "ResourceUnification.Config", ref ResourceDefines);
 
-            foreach(var mod in UnityModManager.modEntries)
+            foreach(ModEntry mod in UnityModManager.modEntries)
             {
                 if (mod.Active)
                 {
                     string path = mod.Path + Path.DirectorySeparatorChar + "UserSettings" + Path.DirectorySeparatorChar + "ResourceDefines.json";
                     if (File.Exists(Path.Combine(mod.Path + "ResourceDefines.json")))
                     {
-                        var newDefine = new ResourceDefines();
+                        ResourceDefines newDefine = new ResourceDefines();
                         LoadForeignSettings<ResourceDefines>("ResourceDefines.json", mod, ref newDefine);
                         OtherModDefines.Add(newDefine);
                     }
@@ -66,9 +66,9 @@ namespace ResourceUnification.ModLogic
         public void LoadForeignSettings<T>(string fileName, ModEntry otherMod, ref T setting) where T : IUpdatableSettings
         {
             JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
-            var assembly = ModEntry.Assembly;
-           
-            var userPath = $"{otherMod.Path}{Path.DirectorySeparatorChar}{fileName}";
+            System.Reflection.Assembly assembly = ModEntry.Assembly;
+
+            string userPath = $"{otherMod.Path}{Path.DirectorySeparatorChar}{fileName}";
 
             
             if (File.Exists(userPath))

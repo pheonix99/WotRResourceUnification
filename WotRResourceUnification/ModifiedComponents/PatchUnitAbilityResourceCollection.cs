@@ -25,20 +25,36 @@ namespace ResourceUnification.ModifiedComponents
             {
                 try
                 {
-                    var redirect = blueprint.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+                    ResourceRedirectComponent redirect = blueprint.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
                     if (redirect != null)
                     {
 #if DEBUG
                         //Main.Context.Logger.Log($"UnitAbilityResourceCollection_RedirectGetResource executing for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
 #endif
+                        if (__result != null && redirect.RedirectTo != null && __result.Blueprint.Equals(redirect.RedirectTo))
+                        {
+#if DEBUG
+                            Main.Context.Logger.Log($"No need to redirect on {blueprint.NameSafe()}");
 
 
-                        __instance.m_Resources.TryGetValue(redirect.RedirectTo as BlueprintScriptableObject, out var tempResult);;
+#endif
+                            return;
+                        }
+
+                        __instance.m_Resources.TryGetValue(redirect.RedirectTo as BlueprintScriptableObject, out UnitAbilityResource tempResult);;
                         if (tempResult == null)
                         {
-                            Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
-                            
-                           
+                            if (Kingmaker.Game.Instance.LevelUpController == null)
+                            {
+                                Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
+                            }
+                            else
+                            {
+#if DEBUG
+                                Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName} - would be bypassed in live!");
+#endif
+                            }
+
                         }
                         else
                         {
@@ -56,7 +72,7 @@ namespace ResourceUnification.ModifiedComponents
 
             }
         }
-
+#if DEBUG
         [HarmonyPatch(typeof(UnitAbilityResourceCollection), "Add")]
         static class SeeAddCall
         {
@@ -66,9 +82,10 @@ namespace ResourceUnification.ModifiedComponents
             public static bool Prefix(UnitAbilityResourceCollection __instance, BlueprintScriptableObject blueprint, bool restoreAmount)
             {
 
-#if DEBUG
+
+              
                 Main.Context.Logger.Log($"Prefix: Add called for {blueprint.NameSafe()}, redirected resource is {__instance.GetResource(blueprint)?.Blueprint?.NameSafe()}");
-#endif
+
 
                 return true;
 
@@ -76,7 +93,7 @@ namespace ResourceUnification.ModifiedComponents
 
     
         }
-
+#endif
 
         //Everything else runs throuigh that
     }

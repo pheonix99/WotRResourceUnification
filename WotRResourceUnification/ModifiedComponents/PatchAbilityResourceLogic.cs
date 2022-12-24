@@ -39,9 +39,9 @@ namespace ResourceUnification.ModifiedComponents
 			{
 				try
 				{
-					
 
-					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+
+                    ResourceRedirectComponent redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 						//Main.Context.Logger.Log($"Redirecting from {__result.NameSafe()} {__result.AssetGuidThreadSafe} to {redirect.RedirectTo.NameSafe()} {redirect.RedirectTo.AssetGuidThreadSafe}");
@@ -59,14 +59,7 @@ namespace ResourceUnification.ModifiedComponents
 				
 			}
 		}
-		[HarmonyPatch(typeof(AbilityResourceLogic), "IsAbilityRestrictionPassed")]
-		static class AbilityResourceLogic_IsAbilityRestrictionPassed
-		{
-			public static void Postfix(ref bool __result, AbilityResourceLogic __instance, AbilityData ability)
-			{
-				
-			}
-		}
+		
 
 		[HarmonyPatch(typeof(ActivatableAbilityResourceLogic), "RequiredResource", MethodType.Getter)]
 		static class ActivatableAbilityResourceLogic_RedirectToUnifiedResource
@@ -75,8 +68,8 @@ namespace ResourceUnification.ModifiedComponents
 			{
 				try
 				{
-					
-					var redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+
+                    ResourceRedirectComponent redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 

@@ -19,8 +19,8 @@ namespace ResourceUnification.ModifiedComponents
 			{
 				try
 				{
-					
-					var redirect = __instance.m_Resource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+
+                    ResourceRedirectComponent redirect = __instance.m_Resource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 #if DEBUG

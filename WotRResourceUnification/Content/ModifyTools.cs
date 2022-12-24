@@ -38,7 +38,7 @@ namespace ResourceUnification.Content
 
        public static void RegisterForProcessing(string key, string guid, bool fromClass)
         {
-            var BP = BlueprintTools.GetBlueprint<BlueprintFeature>(guid)?.ToReference<BlueprintFeatureReference>();
+            BlueprintFeatureReference BP = BlueprintTools.GetBlueprint<BlueprintFeature>(guid)?.ToReference<BlueprintFeatureReference>();
             if (BP == null)
             {
                 NoteFailure($"Unification Base Wizard failed on {guid} for {key}: no BP");
@@ -50,7 +50,7 @@ namespace ResourceUnification.Content
 
         public static void RegisterForProcessing(string key, GameResourceEntry gre, bool fromClass)
         {
-            var BP = BlueprintTools.GetBlueprint<BlueprintFeature>(gre.ResourceAdderFeatureGuid);
+            BlueprintFeature BP = BlueprintTools.GetBlueprint<BlueprintFeature>(gre.ResourceAdderFeatureGuid);
             if (BP == null)
             {
                 NoteFailure($"Unification Base Wizard failed on {gre.ResourceAdderFeatureGuid} for {key}: no BP");
@@ -71,7 +71,7 @@ namespace ResourceUnification.Content
             int preprocess = 0;
             do
             {
-                var good = UnificationPreproccess(unifications[preprocess]);
+                bool good = UnificationPreproccess(unifications[preprocess]);
                 if (good)
                 {
                     preprocess++;
@@ -93,7 +93,7 @@ namespace ResourceUnification.Content
 
         private static void RegisterForProcessing(ResourceFeatureInfo resourceFeatureInfo)
         {
-            var unification = unifications.FirstOrDefault(x => x.Name.Equals(resourceFeatureInfo.Key, StringComparison.OrdinalIgnoreCase));
+            LevelScalingUnification unification = unifications.FirstOrDefault(x => x.Name.Equals(resourceFeatureInfo.Key, StringComparison.OrdinalIgnoreCase));
 
 
             if (unification == null)
@@ -124,7 +124,7 @@ namespace ResourceUnification.Content
 
         internal static void RegisterForProcessingAsBaseGameAnchor(string key, GameResourceEntry gre)
         {
-            var BP = BlueprintTools.GetBlueprintReference<BlueprintFeatureReference>(gre.ResourceAdderFeatureGuid);
+            BlueprintFeatureReference BP = BlueprintTools.GetBlueprintReference<BlueprintFeatureReference>(gre.ResourceAdderFeatureGuid);
             BlueprintFeatureReference altBP = null;
             if (!string.IsNullOrWhiteSpace(gre.WrapperGuid))
             {
@@ -137,7 +137,7 @@ namespace ResourceUnification.Content
             }
             
             ResourceFeatureInfo resourceFeatureInfo = new ResourceFeatureInfo(key, BP, true, altBP);
-            var unification = unifications.FirstOrDefault(x => x.Name.Equals(resourceFeatureInfo.Key, StringComparison.OrdinalIgnoreCase));
+            LevelScalingUnification unification = unifications.FirstOrDefault(x => x.Name.Equals(resourceFeatureInfo.Key, StringComparison.OrdinalIgnoreCase));
 
 
             if (unification == null)
@@ -280,7 +280,7 @@ namespace ResourceUnification.Content
         public static string MakeArcheLog (IEnumerable<BlueprintArchetypeReference> list)
         {
             string s = "";
-            var listT = list.ToArray();
+            BlueprintArchetypeReference[] listT = list.ToArray();
             for(int i = 0; i< listT.Count(); i++)
             {
                 s += listT[i].NameSafe();
@@ -297,8 +297,8 @@ namespace ResourceUnification.Content
             int checkpoint = 0;
             do
             {
-                var entry = unification.UnprocessedResourceAddingFeatures[checkpoint];
-                var feature = entry.ResourceHoldingFeature.Get();
+                ResourceFeatureInfo entry = unification.UnprocessedResourceAddingFeatures[checkpoint];
+                BlueprintFeature feature = entry.ResourceHoldingFeature.Get();
                 if (feature.Components.OfType<AddAbilityResources>().Any())
                 {
                     entry.Resource = feature.Components.OfType<AddAbilityResources>().FirstOrDefault().m_Resource;
@@ -331,28 +331,28 @@ namespace ResourceUnification.Content
 
         public static void ScanAllClasses()
         {
-            var root = Game.Instance.BlueprintRoot;
-            var resources = unifications.SelectMany(x => x.ResourcesCovered);
+            Kingmaker.Blueprints.Root.BlueprintRoot root = Game.Instance.BlueprintRoot;
+            IEnumerable<BlueprintAbilityResourceReference> resources = unifications.SelectMany(x => x.ResourcesCovered);
             
 
         }
 
         public static void BuildUnification(LevelScalingUnification unification)
         {
-            
+
 #if DEBUG
             Main.Context.Logger.Log($"Doing full resource unification for {unification.Name}");
 #endif
-            
 
 
 
 
-            var baseResource = unification.BaseInfo.Resource.Get();
+
+            BlueprintAbilityResource baseResource = unification.BaseInfo.Resource.Get();
 
 
 
-            var existing = baseResource.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+            ImprovedAbilityResourceCalc existing = baseResource.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
             if (existing == null)
             {
                 baseResource.AddComponent<ImprovedAbilityResourceCalc>(x =>
@@ -367,18 +367,18 @@ namespace ResourceUnification.Content
 
 
 
-            var extendedAmount = baseResource.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+            ImprovedAbilityResourceCalc extendedAmount = baseResource.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
 
             do
             {
-               
 
-                var info = unification.UnprocessedResourceAddingFeatures[0];
-                var feature = info.ResourceHoldingFeature.Get();
-                var progFeature = info.ProgressionFacingFeature.Get();
+
+                ResourceFeatureInfo info = unification.UnprocessedResourceAddingFeatures[0];
+                BlueprintFeature feature = info.ResourceHoldingFeature.Get();
+                BlueprintFeature progFeature = info.ProgressionFacingFeature.Get();
                 Main.Context.Logger.Log($"Adding {feature.name} to {unification.Name}");
-                var resource = info.Resource.Get();
-                var amount = info.Amount;
+                BlueprintAbilityResource resource = info.Resource.Get();
+                BlueprintAbilityResource.Amount amount = info.Amount;
                 if (resource == null)
                 {
                     Main.Context.Logger.Log($"Cannot find AddAbilityResources for {feature.Name}, skipping");
@@ -414,7 +414,7 @@ namespace ResourceUnification.Content
 
                 if (amount.IncreasedByLevel)
                 {
-                    var maps = ExtractDict(amount.m_Class.Where(x => x != null).Select(x => x.Get()).ToList(), amount.m_Archetypes.Where(x => x != null).Select(x => x.Get()).ToList());
+                    Dictionary<BlueprintCharacterClassReference, List<BlueprintArchetypeReference>> maps = ExtractDict(amount.m_Class.Where(x => x != null).Select(x => x.Get()).ToList(), amount.m_Archetypes.Where(x => x != null).Select(x => x.Get()).ToList());
                     if (maps.Count == 0 && amount.OtherClassesModifier == 0f)
                     {
                         NoteFailure($"{feature.Name} has IncreasedByLevel set but no classes set for that - this could be a blueprint error or a thing I don't understand yet");
@@ -422,7 +422,7 @@ namespace ResourceUnification.Content
                     }
                     else
                     {
-                        foreach (var charClass in maps)
+                        foreach (KeyValuePair<BlueprintCharacterClassReference, List<BlueprintArchetypeReference>> charClass in maps)
                         {
 #if DEBUG
                             Main.Context.Logger.Log($"Building class entry for {charClass.Key.NameSafe()} on {unification.Name}");
@@ -440,7 +440,7 @@ namespace ResourceUnification.Content
 
                             if (charClass.Value.Any()) //Base Archetypes
                             {
-                                var newSubentry= new ArchetypeEntry
+                                ArchetypeEntry newSubentry = new ArchetypeEntry
                                 {
                                     Archetypes = charClass.Value
 
@@ -453,12 +453,12 @@ namespace ResourceUnification.Content
                             }
                             else
                             {
-                                var classToProbe = charClass.Key.Get();
-                                var levels = classToProbe.Progression.LevelEntries.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level);
+                                BlueprintCharacterClass classToProbe = charClass.Key.Get();
+                                IEnumerable<int> levels = classToProbe.Progression.LevelEntries.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level);
                                 if (classToProbe.Progression.LevelEntries.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))))
                                 {
 
-                                    var removing = classToProbe.Archetypes.Where(x => x.RemoveFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));//get arches that remove feature
+                                    IEnumerable<BlueprintArchetype> removing = classToProbe.Archetypes.Where(x => x.RemoveFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));//get arches that remove feature
                                     removing = removing.Where(x => x.RemoveFeatures.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level).SequenceEqual(levels));//cut out ones that don't remove all instances
                                     
                                    
@@ -469,7 +469,7 @@ namespace ResourceUnification.Content
                                     }
                                     else
                                     {
-                                        var newSubentry = new VanillaEntry
+                                        VanillaEntry newSubentry = new VanillaEntry
                                         {
                                             BlockedArchetypes = removing.Select(x => x.ToReference<BlueprintArchetypeReference>()).ToList()
 
@@ -486,8 +486,8 @@ namespace ResourceUnification.Content
                                 }
                                 else if (classToProbe.Archetypes.Any(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>())))))
                                 {
-                                    var adding = classToProbe.Archetypes.Where(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));
-                                    var newSubentry = new ArchetypeEntry
+                                    IEnumerable<BlueprintArchetype> adding = classToProbe.Archetypes.Where(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));
+                                    ArchetypeEntry newSubentry = new ArchetypeEntry
                                     {
                                         Archetypes = adding.Select(x => x.ToReference<BlueprintArchetypeReference>()).ToList(),
 
@@ -498,7 +498,7 @@ namespace ResourceUnification.Content
                                 }
                                 else if (classToProbe.PrestigeClass)
                                 {
-                                    var newSubentry = new VanillaEntry
+                                    VanillaEntry newSubentry = new VanillaEntry
                                     {
                                         
 
@@ -522,7 +522,7 @@ namespace ResourceUnification.Content
                 }
                 if (amount.IncreasedByLevelStartPlusDivStep)
                 {
-                    var maps = ExtractDict(amount.m_ClassDiv.Where(x => x != null).Select(x => x.Get()).ToList(), amount.m_Archetypes.Where(x => x != null).Select(x => x.Get()).ToList());
+                    Dictionary<BlueprintCharacterClassReference, List<BlueprintArchetypeReference>> maps = ExtractDict(amount.m_ClassDiv.Where(x => x != null).Select(x => x.Get()).ToList(), amount.m_Archetypes.Where(x => x != null).Select(x => x.Get()).ToList());
                     if (maps.Count == 0 && amount.OtherClassesModifier == 0f)
                     {
                         NoteFailure($"{feature.Name} has IncreasedByLevel set but no classes set for that - this could be a blueprint error or a thing I don't understand yet");
@@ -530,7 +530,7 @@ namespace ResourceUnification.Content
                     }
                     else
                     {
-                        foreach (var charClass in maps)
+                        foreach (KeyValuePair<BlueprintCharacterClassReference, List<BlueprintArchetypeReference>> charClass in maps)
                         {
 #if DEBUG
                             Main.Context.Logger.Log($"Building class entry for {charClass.Key.NameSafe()} on {unification.Name}");
@@ -560,7 +560,7 @@ namespace ResourceUnification.Content
                                     PerLevel = false
 
                                 });
-                                var newSubentry = new ArchetypeEntry
+                                ArchetypeEntry newSubentry = new ArchetypeEntry
                                 {
                                     Archetypes = charClass.Value
 
@@ -575,13 +575,13 @@ namespace ResourceUnification.Content
                             }
                             else
                             {
-                                var classToProbe = charClass.Key.Get();
-                                var levels = classToProbe.Progression.LevelEntries.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level);
+                                BlueprintCharacterClass classToProbe = charClass.Key.Get();
+                                IEnumerable<int> levels = classToProbe.Progression.LevelEntries.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level);
                                 if (classToProbe.Progression.LevelEntries.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))))
                                 {
 
                                     //var removing = classToProbe.Archetypes.Where(x => x.RemoveFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));
-                                    var removing = classToProbe.Archetypes.Where(x => x.RemoveFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));//get arches that remove feature
+                                    IEnumerable<BlueprintArchetype> removing = classToProbe.Archetypes.Where(x => x.RemoveFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));//get arches that remove feature
                                     removing = removing.Where(x => x.RemoveFeatures.Where(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))).Select(x => x.Level).SequenceEqual(levels));//cut out ones that don't remove all instances
                                     
                                     //removing = removing.Where(x => !x.AddFeatures.FirstOrDefault(x => x.Level == levels.FirstOrDefault())?.Features.Any(x => x.Components.OfType<AddAbilityResources>().FirstOrDefault()?.Resource.Equals(resource) == true) == true);
@@ -607,9 +607,9 @@ namespace ResourceUnification.Content
                                 }
                                 else if (classToProbe.Archetypes.Any(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>())))))
                                 {
-                                    var adding = classToProbe.Archetypes.Where(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));
-                                    
-                                    var newSubentry = new ArchetypeEntry
+                                    IEnumerable<BlueprintArchetype> adding = classToProbe.Archetypes.Where(x => x.AddFeatures.Any(x => x.Features.Any(x => x.ToReference<BlueprintFeatureBaseReference>().Equals(progFeature.ToReference<BlueprintFeatureBaseReference>()))));
+
+                                    ArchetypeEntry newSubentry = new ArchetypeEntry
                                     {
                                         Archetypes = adding.Select(x => x.ToReference<BlueprintArchetypeReference>()).ToList()
 
@@ -680,7 +680,7 @@ namespace ResourceUnification.Content
             }
             foreach (BlueprintArchetype v in arches)
             {
-                if (classToArchMappings.TryGetValue(v.m_ParentClass.ToReference<BlueprintCharacterClassReference>(), out var parentList))
+                if (classToArchMappings.TryGetValue(v.m_ParentClass.ToReference<BlueprintCharacterClassReference>(), out List<BlueprintArchetypeReference> parentList))
                 {
                     parentList.Add(v.ToReference<BlueprintArchetypeReference>());
                 }

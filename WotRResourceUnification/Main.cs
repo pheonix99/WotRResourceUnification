@@ -20,7 +20,7 @@ namespace ResourceUnification
             {
                 Enabled = true;
 
-                var harmony = new Harmony(modEntry.Info.Id);
+                Harmony harmony = new Harmony(modEntry.Info.Id);
                 Context = new (modEntry);
                 Context.ModEntry.OnSaveGUI = OnSaveGUI;
                 Context.ModEntry.OnGUI = UMMSettingsUI.OnGUI;

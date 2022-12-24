@@ -59,7 +59,7 @@ namespace ResourceUnification.ModifiedComponents
 						}
 						__result -= reduce;
 						int increase = 0;
-						foreach (var t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
+						foreach (ResourceSourceInfoComponent t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
 						{
 							int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
 							increase = Math.Max((statVal), increase);
@@ -102,9 +102,9 @@ namespace ResourceUnification.ModifiedComponents
 						return true;
 					}
 
-					
-					
-					var customHandler = __instance.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+
+
+                    ImprovedAbilityResourceCalc customHandler = __instance.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
 					if (customHandler != null)
                     {
 #if DEBUG
@@ -116,7 +116,7 @@ namespace ResourceUnification.ModifiedComponents
 						if (customHandler.UsesStat || __instance.Components.OfType<ResourceSourceInfoComponent>().Any())
                         {
 							int increase = 0;
-							foreach (var t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
+							foreach (ResourceSourceInfoComponent t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
 							{
 
 								int stat = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).ModifiedValue;
@@ -136,7 +136,7 @@ namespace ResourceUnification.ModifiedComponents
 						int bestBaseValue = 0;
 						int bestMinClassValue = 0;
 						double classRunningTotal = 0;
-						foreach (var charClass in unit.Progression.Classes)
+						foreach (ClassData charClass in unit.Progression.Classes)
 						{
 #if DEBUG
 							Main.Context.Logger.Log($"Assessing {charClass.CharacterClass.Name} on {unit.CharacterName}");
@@ -144,14 +144,14 @@ namespace ResourceUnification.ModifiedComponents
 #endif
 							int found = 0;
 							double best = 0;
-							if (customHandler.classEntries.TryGetValue(charClass.CharacterClass.ToReference<BlueprintCharacterClassReference>(), out var classEntry))
+							if (customHandler.classEntries.TryGetValue(charClass.CharacterClass.ToReference<BlueprintCharacterClassReference>(), out ClassEntry classEntry))
                             {
 
 #if DEBUG
 								Main.Context.Logger.Log($"ClassEntry found");
 #endif
-								var entries = new List<ClassGainSubEntry>();
-								foreach(var v in classEntry.archetypeEntries)
+                                List<ClassGainSubEntry> entries = new List<ClassGainSubEntry>();
+								foreach(ArchetypeEntry v in classEntry.archetypeEntries)
                                 {
 									if (v.Applies(charClass))
                                     {
@@ -178,7 +178,7 @@ namespace ResourceUnification.ModifiedComponents
 								{
 
 
-									foreach (var entry in entries)
+									foreach (ClassGainSubEntry entry in entries)
 									{
 										bestBaseValue = Math.Max(bestBaseValue, entry.BaseValue);
 										if (entry.PerLevel)

@@ -28,7 +28,7 @@ namespace ResourceUnification.Content
                 try
                 {
 
-                    var cavalierResource = BlueprintTools.GetBlueprint<BlueprintAbilityResource>("672e8c9c98db1df4aa66676a66036e71");
+                    BlueprintAbilityResource cavalierResource = BlueprintTools.GetBlueprint<BlueprintAbilityResource>("672e8c9c98db1df4aa66676a66036e71");
                     if (cavalierResource.m_MaxAmount.StartingLevel == 4 && cavalierResource.m_MaxAmount.StartingIncrease == 1)
                     {
                         cavalierResource.m_MaxAmount.StartingLevel = 1;
@@ -55,29 +55,29 @@ namespace ResourceUnification.Content
                     //ModifyTools.RegisterForProcessingAsBaseGameAnchor("CavalierChallenge", "dc77cd2ad52cb0e43bb88b264d7af648");
 
                     //ScaledFist();
-                    foreach (var v in Main.Context.ResourceDefines.ClassScalingResourceEntries)
+                    foreach (CombinedScalingResourceEntry v in Main.Context.ResourceDefines.ClassScalingResourceEntries)
                     {
                         
-                            foreach(var classFeature in v.ClassResourceFeatureGuids)
+                            foreach(GameResourceEntry classFeature in v.ClassResourceFeatureGuids)
                             {
                                 ModifyTools.RegisterForProcessing(v.Key, classFeature, true);
                             }
-                                foreach(var nonClassFeature in v.NonClassResourceFeatureGuids)
+                                foreach(GameResourceEntry nonClassFeature in v.NonClassResourceFeatureGuids)
                             {
                                 ModifyTools.RegisterForProcessing(v.Key, nonClassFeature, false);
                             }
 
 
                     }
-                    foreach(var mod in Main.Context.OtherModDefines)
+                    foreach(ResourceDefines mod in Main.Context.OtherModDefines)
                     {
-                        foreach(var v in mod.ClassScalingResourceEntries)
+                        foreach(CombinedScalingResourceEntry v in mod.ClassScalingResourceEntries)
                         {
-                            foreach (var classFeature in v.ClassResourceFeatureGuids)
+                            foreach (GameResourceEntry classFeature in v.ClassResourceFeatureGuids)
                             {
                                 ModifyTools.RegisterForProcessing(v.Key, classFeature, true);
                             }
-                            foreach (var nonClassFeature in v.NonClassResourceFeatureGuids)
+                            foreach (GameResourceEntry nonClassFeature in v.NonClassResourceFeatureGuids)
                             {
                                 ModifyTools.RegisterForProcessing(v.Key, nonClassFeature, false);
                             }

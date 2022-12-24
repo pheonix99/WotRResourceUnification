@@ -29,16 +29,16 @@ namespace ResourceUnification
             private static int selectedSubTab;
             public static void Info()
             {
-                var TabLevel = SetttingUI.TabLevel.Zero;
+                SetttingUI.TabLevel TabLevel = SetttingUI.TabLevel.Zero;
 
                 UI.Div(0, 15);
                 UI.TabBar(ref selectedSubTab, () =>  UI.Label("Note: Entries show state of mod system, non-mod resource handling is not shown.") , ModifyTools.Unifications.Select(x => new NamedAction(x.Name, () =>
                 {
 
-                    var extended = x.BaseInfo.Resource.Get().Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+                    ImprovedAbilityResourceCalc extended = x.BaseInfo.Resource.Get().Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
                     if (extended != null)
                     {
-                        foreach (var element in extended.classEntries)
+                        foreach (KeyValuePair<Kingmaker.Blueprints.BlueprintCharacterClassReference, ClassEntry> element in extended.classEntries)
                         {
                             UI.Label($"Class Entry: {element.Key.NameSafe()}".green().bold());
                             UI.Div(10, 15);
@@ -50,7 +50,7 @@ namespace ResourceUnification
                             {
                                 UI.Label($"No Gain For Vanilla Version");
                             }
-                            foreach(var entry in element.Value.archetypeEntries)
+                            foreach(ArchetypeEntry entry in element.Value.archetypeEntries)
                             {
                                 UI.Label($"{ModifyTools.MakeArcheLog(entry.Archetypes)} Resource Gain: {entry.DisplayInfo()} ");
                             }
