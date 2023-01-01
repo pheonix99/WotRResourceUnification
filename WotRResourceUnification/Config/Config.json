@@ -1,0 +1,13 @@
+﻿{
+  "NewSettingsOffByDefault": false,
+  "RemoveUnnecessaryVariants": {
+    "DisableAll": false,
+    "Settings": {
+      "EldritchArcana": {
+        "Enabled": true,
+        "Description": "With Magus and Eldritch Scion resource pools combined, there isn't any reason for Eldritch Scion to need seperate arcana. Enable this to switch Eldritch Scion to using standard Magus Arcana picks. This may improve multi-archetype compatibility with the relevant mod."
+      }
+    }
+  }
+
+}

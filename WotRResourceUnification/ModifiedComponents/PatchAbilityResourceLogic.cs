@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ResourceUnification.NewComponents;
 using Kingmaker.UnitLogic.Abilities;
+using Kingmaker.UnitLogic.Class.Kineticist;
 
 namespace ResourceUnification.ModifiedComponents
 {
@@ -40,8 +41,17 @@ namespace ResourceUnification.ModifiedComponents
 				try
 				{
 
+					if (__instance.m_RequiredResource == null)
+                    {
+						if (__instance.OwnerBlueprint?.GetComponent<AbilityKineticist>() is not null)
+							return;//Don't bother logging if it's this weirdo kin stuff
 
-                    ResourceRedirectComponent redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+						Main.Context.Logger.LogError($"__instance.m_RequiredResource is null in AbilityResourceLogic_RedirectToUnifiedResource!{__instance?.OwnerBlueprint?.name ?? "Blueprint Missing!"}");
+						return;
+                    }
+
+
+					ResourceRedirectComponent redirect = __instance.m_RequiredResource?.Get()?.Components?.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 						//Main.Context.Logger.Log($"Redirecting from {__result.NameSafe()} {__result.AssetGuidThreadSafe} to {redirect.RedirectTo.NameSafe()} {redirect.RedirectTo.AssetGuidThreadSafe}");
@@ -52,7 +62,15 @@ namespace ResourceUnification.ModifiedComponents
 				}
 				catch (Exception e)
 				{
-					Main.Context.Logger.LogError(e, "Error In AbilityResourceLogic_RedirectToUnifiedResource");
+					try
+					{
+						Main.Context.Logger.LogError(e, $"Error In AbilityResourceLogic_RedirectToUnifiedResource for {__instance?.OwnerBlueprint?.name ?? "Blueprint Missing!"}");
+					}
+					catch (Exception e2)
+					{
+						Main.Context.Logger.LogError(e, $"Error In AbilityResourceLogic_RedirectToUnifiedResource killed logger!");
+						Main.Context.Logger.LogError(e2, $"Logger kill data!");
+					}
 				}
 
 
@@ -68,8 +86,16 @@ namespace ResourceUnification.ModifiedComponents
 			{
 				try
 				{
+					if (__instance.m_RequiredResource == null)
+					{
+						if (__instance.OwnerBlueprint?.GetComponent<AbilityKineticist>() is not null)
+							return;//Don't bother logging if it's this weirdo kin stuff
 
-                    ResourceRedirectComponent redirect = __instance.m_RequiredResource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+						//Main.Context.Logger.LogError($"__instance.m_RequiredResource is null in ActivatableAbilityResourceLogic_RedirectToUnifiedResource on {__instance?.OwnerBlueprint?.name ?? "Blueprint Missing!"}");
+						return;
+					}
+
+					ResourceRedirectComponent redirect = __instance.m_RequiredResource.Get()?.Components?.OfType<ResourceRedirectComponent>().FirstOrDefault();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 
@@ -79,7 +105,16 @@ namespace ResourceUnification.ModifiedComponents
 				}
 				catch (Exception e)
 				{
-					Main.Context.Logger.LogError(e, "Error In ActivatableAbilityResourceLogic_RedirectToUnifiedResource");
+					try
+					{
+						Main.Context.Logger.LogError(e, $"Error In ActivatableAbilityResourceLogic_RedirectToUnifiedResource for {__instance?.OwnerBlueprint?.name ?? "Blueprint Missing!"}");
+					}
+					catch (Exception e2)
+					{
+						Main.Context.Logger.LogError(e, $"Error In ActivatableAbilityResourceLogic_RedirectToUnifiedResource killed logger!");
+						Main.Context.Logger.LogError(e2, $"Logger kill data!");
+					}
+					
 				}
 
 

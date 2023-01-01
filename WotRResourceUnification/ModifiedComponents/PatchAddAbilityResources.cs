@@ -13,14 +13,21 @@ namespace ResourceUnification.ModifiedComponents
     class PatchAddAbilityResources
 	{       
 		[HarmonyPatch(typeof(AddAbilityResources), "Resource", MethodType.Getter)]
-		static class AbilityResourceLogic_RedirectToUnifiedResource
+		static class AddAbilityResources_RedirectToUnifiedResource
 		{
 			public static void Postfix(ref BlueprintAbilityResource __result, AddAbilityResources __instance)
 			{
 				try
 				{
+					if (__instance.m_Resource is null)
+					{
+						Main.Context.Logger.LogError($"AddAbilityResources_RedirectToUnifiedResource: __instance.m_resource is null on {__instance?.OwnerBlueprint?.name ?? "NO BLUEPRINT"}");
+						return;
+                    }
 
-                    ResourceRedirectComponent redirect = __instance.m_Resource.Get()?.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+
+
+                    ResourceRedirectComponent redirect = __instance.m_Resource?.Get()?.GetComponent<ResourceRedirectComponent>();
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 #if DEBUG
@@ -32,7 +39,7 @@ namespace ResourceUnification.ModifiedComponents
 				}
 				catch (Exception e)
 				{
-					Main.Context.Logger.LogError(e, "Error In AbilityResourceLogic_RedirectToUnifiedResource");
+					Main.Context.Logger.LogError(e, $"Error In AddAbilityResources_RedirectToUnifiedResource  on {__instance?.OwnerBlueprint?.name ?? "NO BLUEPRINT"}");
 				}
 
 

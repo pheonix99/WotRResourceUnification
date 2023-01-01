@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ResourceUnification.NewComponents;
+using TabletopTweaks.Core.Utilities;
 
 namespace ResourceUnification.ModifiedComponents
 {
@@ -36,7 +37,7 @@ namespace ResourceUnification.ModifiedComponents
 						Main.Context.Logger.Log($"ImprovedAbilityResourceCalc for {__instance.name} on {unit.CharacterName} gives {__result} in postfix");
 #endif
 					}
-					else if (__instance.Components.OfType<ResourceSourceInfoComponent>().Any(x => x.Active(unit)))
+					else if (__instance.GetComponents<ResourceSourceInfoComponent>().Any(x => x.Active(unit)))
 					{
 #if DEBUG
 						Main.Context.Logger.Log($"ApplyAltStatsToMax executing for {__instance.name} on {unit.CharacterName}, entering with {__result}");
@@ -59,7 +60,7 @@ namespace ResourceUnification.ModifiedComponents
 						}
 						__result -= reduce;
 						int increase = 0;
-						foreach (ResourceSourceInfoComponent t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
+						foreach (ResourceSourceInfoComponent t in __instance.GetComponents<ResourceSourceInfoComponent>(x => x.Active(unit)))
 						{
 							int statVal = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).Bonus;
 							increase = Math.Max((statVal), increase);
@@ -77,7 +78,7 @@ namespace ResourceUnification.ModifiedComponents
 				}
 				catch (Exception e)
 				{
-					Main.Context.Logger.LogError(e, "Error In ApplyAltStatsToMax");
+					Main.Context.Logger.LogError(e, $"Error In ApplyAltStatsToMax on {__instance?.name ?? "Blueprint Missing!"}");
 				}
 
 
@@ -104,7 +105,7 @@ namespace ResourceUnification.ModifiedComponents
 
 
 
-                    ImprovedAbilityResourceCalc customHandler = __instance.Components.OfType<ImprovedAbilityResourceCalc>().FirstOrDefault();
+                    ImprovedAbilityResourceCalc customHandler = __instance.GetComponent<ImprovedAbilityResourceCalc>();
 					if (customHandler != null)
                     {
 #if DEBUG
@@ -116,7 +117,7 @@ namespace ResourceUnification.ModifiedComponents
 						if (customHandler.UsesStat || __instance.Components.OfType<ResourceSourceInfoComponent>().Any())
                         {
 							int increase = 0;
-							foreach (ResourceSourceInfoComponent t in __instance.Components.OfType<ResourceSourceInfoComponent>().Where(x => x.Active(unit)))
+							foreach (ResourceSourceInfoComponent t in __instance.GetComponents<ResourceSourceInfoComponent>(x => x.Active(unit)))
 							{
 
 								int stat = (unit.Stats.GetStat(t.AltStat) as ModifiableValueAttributeStat).ModifiedValue;
@@ -235,7 +236,7 @@ namespace ResourceUnification.ModifiedComponents
 				}
 				catch (Exception e)
 				{
-					Main.Context.Logger.LogError(e, "Error In BlueprintAbilityResource_RedirectToUnifiedResource");
+					Main.Context.Logger.LogError(e, $"Error In BlueprintAbilityResource_RedirectToUnifiedResource on {__instance?.name ?? "Blueprint Missing!"}");
 				}
 
 

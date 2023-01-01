@@ -16,11 +16,13 @@ namespace ResourceUnification.ModLogic
     class UnificationModContext : ModContextBase
     {
         public ResourceDefines ResourceDefines;
+        public Config.Config Config;
         public List<ResourceDefines> OtherModDefines = new();
 
         public UnificationModContext(UnityModManager.ModEntry modEntry) : base(modEntry)
         {
             LoadBlueprints("ResourceUnification.Config", this);
+            LoadSettings("Config.json", "ResourceUnification.Config", ref Config);
             LoadSettings("DefaultResourceDefines.json", "ResourceUnification.Config", ref ResourceDefines);
 
             foreach(ModEntry mod in UnityModManager.modEntries)
@@ -112,7 +114,7 @@ namespace ResourceUnification.ModLogic
         public override void SaveAllSettings()
         {
             base.SaveAllSettings();
-           
+            SaveSettings("Config.json", Config);
         }
     }
 }

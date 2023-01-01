@@ -5,6 +5,12 @@
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
 ## Changelog
+1.2.3
+One last bout of antispam
+
+1.2.2
+More optimization and log spam reduction
+
 1.2.1
 Should slightly improve perfomance and spam the logs less
 

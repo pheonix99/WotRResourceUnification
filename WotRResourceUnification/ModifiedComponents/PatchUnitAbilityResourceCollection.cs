@@ -25,7 +25,13 @@ namespace ResourceUnification.ModifiedComponents
             {
                 try
                 {
-                    ResourceRedirectComponent redirect = blueprint.Components.OfType<ResourceRedirectComponent>().FirstOrDefault();
+                    if (blueprint is null)
+                    {
+                        Main.Context.Logger.LogError($"Null BP passed to RedirectGetResource");
+                        return;
+                    }
+
+                    ResourceRedirectComponent redirect = blueprint.Components?.OfType<ResourceRedirectComponent>().FirstOrDefault();
                     if (redirect != null)
                     {
 #if DEBUG
@@ -65,7 +71,16 @@ namespace ResourceUnification.ModifiedComponents
                 }
                 catch(Exception e)
                 {
-                    Main.Context.Logger.LogError(e, "Error In RedirectGetResource");
+                    try
+                    {
+                        Main.Context.Logger.LogError(e, $"Error In RedirectGetResource for {blueprint?.name ?? "Blueprint Missing!"}");
+                    }
+                    catch (Exception e2)
+                    {
+                        Main.Context.Logger.LogError(e, $"Error In RedirectGetResource killed logger!");
+                        Main.Context.Logger.LogError(e2, $"Logger kill data!");
+                    }
+                    
                 }
 
                 

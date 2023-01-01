@@ -19,7 +19,8 @@ namespace ResourceUnification
             UI.AutoWidth();
             UI.TabBar(ref selectedTab,
                 () => UI.Label(""),
-                    new NamedAction("Unification Info", () => InfoTabls.Info())
+                    new NamedAction("Unification Info", () => InfoTabls.Info()),
+                    new NamedAction("Configuration", () => SettingsTabs.Config())
                     );
 
         }
@@ -66,6 +67,27 @@ namespace ResourceUnification
 
             }
         }
+
+        static class SettingsTabs
+        {
+
+            public static void Config()
+            {
+                SetttingUI.TabLevel TabLevel = SetttingUI.TabLevel.Zero;
+                Config.Config config = Main.Context.Config;
+                UI.Div(0, 15);
+                using (UI.VerticalScope())
+                {
+                    UI.Toggle("New Settings Off By Default".bold(), ref config.NewSettingsOffByDefault);
+                    UI.Space(25);
+                    SetttingUI.SettingGroup("Remove Unnecessary Variants", TabLevel, config.RemoveUnnecessaryVariants);
+                    
+
+                }
+            }
+
+        }
+
     }
 
 
