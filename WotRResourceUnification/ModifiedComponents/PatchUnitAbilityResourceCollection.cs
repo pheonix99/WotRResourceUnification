@@ -52,7 +52,10 @@ namespace ResourceUnification.ModifiedComponents
                         {
                             if (Kingmaker.Game.Instance.LevelUpController == null)
                             {
-                                Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}");
+#if DEBUG
+                                Main.Context.Logger.LogError($"UnitAbilityResourceCollection_RedirectGetResource redirected to null resource for {blueprint.NameSafe()} on {__instance.m_Owner.CharacterName}, redirectto is  {redirect.RedirectTo?.name ?? "null"}");
+
+#endif
                             }
                             else
                             {
@@ -97,9 +100,9 @@ namespace ResourceUnification.ModifiedComponents
             public static bool Prefix(UnitAbilityResourceCollection __instance, BlueprintScriptableObject blueprint, bool restoreAmount)
             {
 
-
+                
               
-                Main.Context.Logger.Log($"Prefix: Add called for {blueprint.NameSafe()}, redirected resource is {__instance.GetResource(blueprint)?.Blueprint?.NameSafe()}");
+                Main.Context.Logger.Log($"Prefix: Add called for {blueprint.NameSafe()}, redirected resource is {__instance.GetResource(blueprint)?.Blueprint?.name ?? "null name"}");
 
 
                 return true;

@@ -42,11 +42,6 @@
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
       <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\Assembly-CSharp.dll" />
-      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\Owlcat.Runtime.Core.dll" />
-      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\Owlcat.Runtime.Visual.dll" />
-      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\Owlcat.Runtime.UI.dll" />
-      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\UnityEngine.dll" />
-      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\UnityEngine.CoreModule.dll" />
     </ItemGroup>
     <Publicise InputAssemblies="@(PubliciseInputAssemblies)" OutputPath="$(SolutionDir)lib/" PubliciseCompilerGenerated="true" />
   </Target>
@@ -103,7 +98,9 @@
   <ItemGroup>
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\ResourceDefines.cs" />
-    <EmbeddedResource Include="Config\DefaultResourceDefines.json" />
+    <EmbeddedResource Include="Config\DefaultResourceDefines.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Compile Include="Content\ModifyTools.cs" />
     <Compile Include="Content\LevelScalingUnification.cs" />
     <Compile Include="Content\ResourceFeatureInfo.cs" />
@@ -132,7 +129,28 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>(robocopy "$(TargetDir) " "%25WrathPath%25\Mods\ResourceUnification\ " /s /e )^&amp; IF %25ERRORLEVEL%25 LEQ 1 exit 0</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="Deploy" AfterTargets="Build">
+    <ItemGroup>
+      <Assembly Include="$(OutputPath)\ResourceUnification.dll" />
+      <ModConfig Include="$(OutputPath)\Info.json" />
+      <Data Include="$(OutputPath)\Config\DefaultResourceDefines.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Assembly)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)" />
+    <Copy SourceFiles="@(ModConfig)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)" />
+    <Copy SourceFiles="@(Data)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)\Config" />
+  </Target>
+  <!-- Automatically creates a release zip -->
+  <Target Name="ZipRelease" AfterTargets="Deploy" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <Assembly Include="$(OutputPath)\$(AssemblyName).dll" />
+      <ModConfig Include="$(OutputPath)\Info.json" />
+      <Data Include="$(OutputPath)\Config\DefaultResourceDefines.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Assembly)" DestinationFolder="$(OutputPath)\$(AssemblyName)" />
+    <Copy SourceFiles="@(ModConfig)" DestinationFolder="$(OutputPath)\$(AssemblyName)" />
+    <Copy SourceFiles="@(Data)" DestinationFolder="$(OutputPath)\$(AssemblyName)\Config" />
+    <Message Text="Copying zip  to $(OutputPath)\$(AssemblyName).zip" Importance="High" />
+    <ZipDirectory SourceDirectory="$(OutputPath)\$(AssemblyName)" DestinationFile="C:\ModReleaseCandidates\$(AssemblyName).zip" Overwrite="true" />
+  </Target>
+ 
 </Project>

@@ -5,6 +5,12 @@
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
 ## Changelog
+1.2.4
+Another bout of antispam. 
+
+Added Homebrew Archetypes experimental Thiefling archetype to the default pool.
+
+
 1.2.3
 One last bout of antispam
 
