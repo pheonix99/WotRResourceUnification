@@ -135,9 +135,9 @@
       <ModConfig Include="$(OutputPath)\Info.json" />
       <Data Include="$(OutputPath)\Config\DefaultResourceDefines.json" />
     </ItemGroup>
-    <Copy SourceFiles="@(Assembly)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)" />
-    <Copy SourceFiles="@(ModConfig)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)" />
-    <Copy SourceFiles="@(Data)" DestinationFolder="$(WrathPath)\Mods\$(MSBuildProjectName)\Config" />
+    <Copy SourceFiles="@(Assembly)" DestinationFolder="$(WrathPath)\Mods\$(AssemblyName)" />
+    <Copy SourceFiles="@(ModConfig)" DestinationFolder="$(WrathPath)\Mods\$(AssemblyName)" />
+    <Copy SourceFiles="@(Data)" DestinationFolder="$(WrathPath)\Mods\$(AssemblyName)\Config" />
   </Target>
   <!-- Automatically creates a release zip -->
   <Target Name="ZipRelease" AfterTargets="Deploy" Condition="'$(Configuration)' == 'Release'">
