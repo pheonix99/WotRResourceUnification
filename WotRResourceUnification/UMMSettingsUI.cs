@@ -9,6 +9,7 @@ using ResourceUnification.Content;
 using TabletopTweaks.Core.UMMTools;
 using ResourceUnification.NewComponents;
 
+
 namespace ResourceUnification
 {
     class UMMSettingsUI
@@ -31,8 +32,8 @@ namespace ResourceUnification
             public static void Info()
             {
                 SetttingUI.TabLevel TabLevel = SetttingUI.TabLevel.Zero;
-
-                UI.Div(0, 15);
+               
+                //UI.Div(0, 15);
                 UI.TabBar(ref selectedSubTab, () =>  UI.Label("Note: Entries show state of mod system, non-mod resource handling is not shown.") , ModifyTools.Unifications.Select(x => new NamedAction(x.Name, () =>
                 {
 
@@ -75,7 +76,7 @@ namespace ResourceUnification
             {
                 SetttingUI.TabLevel TabLevel = SetttingUI.TabLevel.Zero;
                 Config.Config config = Main.Context.Config;
-                UI.Div(0, 15);
+                //UI.Div(0, 15);
                 using (UI.VerticalScope())
                 {
                     UI.Toggle("New Settings Off By Default".bold(), ref config.NewSettingsOffByDefault);

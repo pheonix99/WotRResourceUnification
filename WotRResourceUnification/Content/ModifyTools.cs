@@ -392,7 +392,7 @@ namespace ResourceUnification.Content
 
                     });
 #if DEBUG
-                    Main.Context.Logger.Log($"Build Redirect from {resource.Name} to {unification.BaseInfo.Resource.NameSafe()}");
+                    Main.Context.Logger.Log($"Build Redirect from {resource.name} to {unification.BaseInfo.Resource.NameSafe()}");
 #endif
                 }
                 if (amount.IncreasedByStat)

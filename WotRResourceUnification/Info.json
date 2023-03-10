@@ -2,7 +2,7 @@
   "Id": "ResourceUnification",
   "DisplayName": "Resource Unification",
   "Author": "pheonix99",
-  "Version": "1.2.4",
+  "Version": "1.3.0",
   "ManagerVersion": "0.21.3",
   "AssemblyName": "ResourceUnification.dll",
   "EntryMethod": "ResourceUnification.Main.Load",

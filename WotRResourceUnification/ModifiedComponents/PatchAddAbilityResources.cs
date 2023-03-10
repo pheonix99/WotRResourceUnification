@@ -31,7 +31,7 @@ namespace ResourceUnification.ModifiedComponents
 					if (redirect != null && redirect.m_RedirectTo != null)
 					{
 #if DEBUG
-						Main.Context.Logger.Log($"Attempting AddAbilityResources Redirect on {__instance.OwnerBlueprint.NameSafe()}, redirect target is {redirect.RedirectTo.NameSafe()}");
+						Main.Context.Logger.Log($"Attempting AddAbilityResources Redirect on {__instance.OwnerBlueprint.NameSafe()} from {__instance.m_Resource.NameSafe()} redirect target is {redirect.RedirectTo.NameSafe()}");
 #endif
 						__result = redirect.RedirectTo;
 						

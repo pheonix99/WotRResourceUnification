@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props" Condition="Exists('..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" />
   <Import Project="..\packages\Aze.Publicise.MSBuild.Task.1.1.0\build\Aze.Publicise.MSBuild.Task.props" Condition="Exists('..\packages\Aze.Publicise.MSBuild.Task.1.1.0\build\Aze.Publicise.MSBuild.Task.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -36,12 +37,11 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup>
-    <WrathPath Condition=" '$(WrathPath)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure</WrathPath>
-  </PropertyGroup>
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
       <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\Assembly-CSharp.dll" />
+      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\UnityEngine.dll" />
+      <PubliciseInputAssemblies Include="$(WrathPath)\Wrath_Data\Managed\UnityEngine.CoreModule.dll" />
     </ItemGroup>
     <Publicise InputAssemblies="@(PubliciseInputAssemblies)" OutputPath="$(SolutionDir)lib/" PubliciseCompilerGenerated="true" />
   </Target>
@@ -52,26 +52,36 @@
     <Reference Include="Assembly-CSharp_public">
       <HintPath>..\lib\Assembly-CSharp_public.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Build.Framework.15.9.20\lib\net46\Microsoft.Build.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Build.Utilities.Core.15.9.20\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Owlcat.Runtime.Core_public">
-      <HintPath>..\lib\Owlcat.Runtime.Core_public.dll</HintPath>
-    </Reference>
-    <Reference Include="Owlcat.Runtime.UI_public">
-      <HintPath>..\lib\Owlcat.Runtime.UI_public.dll</HintPath>
     </Reference>
     <Reference Include="Owlcat.Runtime.Validation">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Owlcat.Runtime.Validation.dll</HintPath>
     </Reference>
-    <Reference Include="Owlcat.Runtime.Visual_public">
-      <HintPath>..\lib\Owlcat.Runtime.Visual_public.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -111,12 +121,10 @@
     <Compile Include="ModifiedComponents\PatchBlueprintAbilityResource.cs" />
     <Compile Include="ModifiedComponents\PatchUnitAbilityResourceCollection.cs" />
     <Compile Include="ModLogic\UnificationModContext.cs" />
-    <Compile Include="NewComponents\PrequisiteUsesStatForSpellbook.cs" />
     <Compile Include="NewComponents\ResourceSourceInfoComponent.cs" />
     <Compile Include="NewComponents\ExtendedAmount.cs" />
     <Compile Include="NewComponents\ResourceRedirectComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoveUnnecessaryVariants\Magus.cs" />
     <Compile Include="UMMSettingsUI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,5 +160,10 @@
     <Message Text="Copying zip  to $(OutputPath)\$(AssemblyName).zip" Importance="High" />
     <ZipDirectory SourceDirectory="$(OutputPath)\$(AssemblyName)" DestinationFile="C:\ModReleaseCandidates\$(AssemblyName).zip" Overwrite="true" />
   </Target>
- 
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props'))" />
+  </Target>
 </Project>

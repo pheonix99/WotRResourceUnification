@@ -5,6 +5,10 @@
 It's a tool to merge different (game engine) instances of the same (tabletop rules) pool from different classes and make them behave correctly.
 
 ## Changelog
+
+1.3.0
+Fix for critical error that was breaking Thiefling as well as being the real source of the log spam
+
 1.2.4
 Another bout of antispam. 
 
